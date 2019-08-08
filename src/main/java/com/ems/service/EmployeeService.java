@@ -9,10 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ems.empApp.EmsResponse;
+import com.ems.models.Employee;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 
 @Component
 @Path("/employee")
+@Api(value = "Employee Service API")
 public class EmployeeService {
 
 	@Autowired
@@ -20,8 +27,15 @@ public class EmployeeService {
 	
 	@GET
 	@Path("/details")
+	@ApiOperation(value = "Employee Details")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = EmsResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
 	@Produces(MediaType.APPLICATION_JSON)
-	public EmsResponse fetchCustomerDetails() {
+	public EmsResponse fetchEmployeeDetails() {
 		EmsResponse cmsResponse = employeeServiceImpl.doProcess();
 		return cmsResponse;
 	}
