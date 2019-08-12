@@ -1,0 +1,58 @@
+###Employee Management System
+
+1. Consist of one Employee API
+2. Consist of 6 resource with different methods (GET,PUT,POST,DELETE,PATCH)
+3. Consist of two Entity - Employee and Department
+4. Create tables in sql server database - Employee with (empId,empName,empEmail) and Department with (dptId, dptName, empId)
+with one to many relationship
+5. Currently the put,patch,delete method will work only for employee table.
+6. GET,POST is working for both the tables.
+7. Patch will work for emp email.
+8. Below are the request example
+
+#http://localhost:8090/rest/swagger.json
+
+#delete
+http://localhost:8090/rest/employee/106
+
+#get by id
+http://localhost:8090/rest/employee/106
+
+#get all 
+http://localhost:8090/rest/employee
+
+#post
+http://localhost:8090/rest/employee
+{
+    "emp_id": 106,
+    "emp_name": "Gaurav",
+    "deptList": [
+            {
+                "dptId": 18,
+                "dptName": "Biology",
+                "empId": 106
+            },
+            {
+                "dptId": 19,
+                "dptName": "RadioLogy",
+                "empId": 106
+            }
+        ]
+}
+
+
+#patch
+http://localhost:8090/rest/employee/106
+{
+            "emp_email": "gaurav@yahoo.com"
+        }
+		
+		
+#put
+http://localhost:8090/rest/employee
+{
+            "emp_id": 106,
+            "emp_name": "Sai",
+            "emp_email": null,
+            "deptList": null
+        }
