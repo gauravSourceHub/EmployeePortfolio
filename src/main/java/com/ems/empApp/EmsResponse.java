@@ -1,18 +1,25 @@
 package com.ems.empApp;
 
-import com.ems.models.Employee;
+public class EmsResponse<T> {
 
-public class EmsResponse {
+	private  ResponseMetaData responseMetaData;
+	private T responseData;
 
-	Employee emp;
-
-	public Employee getEmp() {
-		return emp;
+	public T getResponseData() {
+		return responseData;
 	}
 
-	public void setEmp(Employee emp) {
-		this.emp = emp;
+	public void setResponseData(T responseData) {
+		this.responseData = responseData;
 	}
 
+	public ResponseMetaData getResponseMetaData() {
+		return responseMetaData;
+	}
+
+	public void setResponseMetaData(ResponseMetaData responseMetaData) {
+		this.responseMetaData = responseMetaData;
+	}
+	
 	
 }

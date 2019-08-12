@@ -1,0 +1,253 @@
+package com.ems.empApp.dao;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import com.ems.empApp.EmsException;
+import com.ems.models.Department;
+import com.ems.models.DepartmentRowMapper;
+import com.ems.models.Employee;
+import com.ems.models.EmployeeRowMapper;
+
+@Repository
+public class EmsDaoImpl implements EmsDao {
+
+	@Autowired
+	JdbcTemplate emsJdbcTemplate;
+
+//	@Override
+//	public List<Employee> getAllEmployee() throws EmsException {
+//		String query = "SELECT * FROM Employee JOIN Department ON Employee.empId = Department.empId";
+//		Map<Integer, Employee> map = new HashMap<Integer, Employee>();
+//		try {
+//			List<Map<String, Object>> mapObjectList = emsJdbcTemplate.queryForList(query);
+//			for (Map<String, Object> mapObj : mapObjectList) {
+//				int empId = (int) mapObj.get("empId");
+//				Employee employee = map.get(empId);
+//				if (employee == null) {
+//					employee = new Employee();
+//					employee.setEmp_id(empId);
+//					employee.setEmp_name(mapObj.get("empName")!=null? (String) mapObj.get("empName") : "");
+//					employee.setEmp_email(mapObj.get("empEmail")!=null? (String) mapObj.get("empEmail") : "");
+//					map.put(empId, employee);
+//				}
+//
+//				List<Department> dptList = employee.getDeptList();
+//				if (dptList == null) {
+//					dptList = new ArrayList<Department>();
+//					employee.setDeptList(dptList);
+//				}
+//				Department dpt = new Department();
+//				dpt.setDptId((int) mapObj.get("dptId"));
+//				dpt.setDptName(mapObj.get("dptName")!=null? (String) mapObj.get("dptName") : "");
+//				dpt.setEmpId((int) mapObj.get("empId"));
+//				dptList.add(dpt);
+//			}
+//		} catch (Exception e) {
+//			throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+//					"getAllEmployee method in EmsDaoImpl failed");
+//		}
+//		return new ArrayList<Employee>(map.values());
+//	}
+//
+//	@Override
+//	public Employee getEmployeeById(String employeeId) throws EmsException {
+//		String query = "SELECT * FROM Employee JOIN Department ON Employee.empId = Department.empId where Employee.empId= "+employeeId;
+//		Map<Integer, Employee> map = new HashMap<Integer, Employee>();
+//		Employee employee = null;
+//		try {
+//			List<Map<String, Object>> mapObjectList = emsJdbcTemplate.queryForList(query);
+//			for (Map<String, Object> mapObj : mapObjectList) {
+//				int empId = (int) mapObj.get("empId");
+//				employee = map.get(empId);
+//				if (employee == null) {
+//					employee = new Employee();
+//					employee.setEmp_id(empId);
+//					employee.setEmp_name(mapObj.get("empName")!=null? (String) mapObj.get("empName") : "");
+//					employee.setEmp_email(mapObj.get("empEmail")!=null? (String) mapObj.get("empEmail") : "");
+//					map.put(empId, employee);
+//				}
+//
+//				List<Department> dptList = employee.getDeptList();
+//				if (dptList == null) {
+//					dptList = new ArrayList<Department>();
+//					employee.setDeptList(dptList);
+//				}
+//				Department dpt = new Department();
+//				dpt.setDptId((int) mapObj.get("dptId"));
+//				dpt.setDptName(mapObj.get("dptName")!=null? (String) mapObj.get("dptName") : "");
+//				dpt.setEmpId((int) mapObj.get("empId"));
+//				dptList.add(dpt);
+//			}
+//			
+//		} catch (Exception e) {
+//			throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+//					"getEmployeeById method in EmsDaoImpl failed");
+//		}
+//		return employee;
+//	}
+	
+	@Override
+	public List<Employee> getAllEmployee() throws EmsException {
+		
+		Map<Integer, Employee> map = new HashMap<Integer, Employee>();
+		String query = "SELECT * from employee";
+		RowMapper<Employee> rowMapper = new EmployeeRowMapper();
+		List<Employee> list = emsJdbcTemplate.query(query, rowMapper);
+		
+		query = "SELECT * from Department";
+		RowMapper<Department> dptRowMapper  = new DepartmentRowMapper();
+		List<Department> dptList = emsJdbcTemplate.query(query, dptRowMapper);
+		
+		for(Employee emp : list) {
+			int empId = emp.getEmp_id();
+			Employee employee = map.get(empId);
+			if (employee == null) {
+//				employee = new Employee();
+//				employee.setEmp_id(empId);
+//				employee.setEmp_name(emp.getEmp_name());
+//				employee.setEmp_email(emp.getEmp_email());
+				map.put(empId, emp);
+			}
+
+			for (Department dpt : dptList) {
+				if (dpt.getEmpId() == emp.getEmp_id()) {
+					List<Department> dptListTemp = emp.getDeptList();
+					if (dptListTemp == null) {
+						dptListTemp = new ArrayList<Department>();
+						emp.setDeptList(dptListTemp);
+					}
+					dptListTemp.add(dpt);
+				}
+			}
+		}
+		
+		return new ArrayList<Employee>(map.values());
+	}
+
+	@Override
+	public Employee getEmployeeById(String empId) throws EmsException {
+		String query = "SELECT * from employee where empId = ? ";
+		Object[] params = new Object[] { Integer.parseInt(empId) };
+		RowMapper<Employee> rowMapper = new EmployeeRowMapper();
+        Employee employee = emsJdbcTemplate.queryForObject(query, params, rowMapper);
+        
+        query = "SELECT * from Department where empId = ? ";
+		params = new Object[] { Integer.parseInt(empId) };
+		RowMapper<Department> dptRowMapper = new DepartmentRowMapper();
+        List<Department> departmentList = emsJdbcTemplate.query(query,dptRowMapper, params);
+		employee.setDeptList(departmentList);
+        return employee;
+	}
+
+
+	@Override
+	public boolean addEmployee(Employee employee) throws EmsException {
+		boolean status = false;
+		String query = "INSERT INTO Employee (empId, empName, empEmail) VALUES (?, ?, ?);";
+		Object[] params = new Object[] { employee.getEmp_id(), employee.getEmp_name(), employee.getEmp_email() };
+		try {
+			int rowAffected = emsJdbcTemplate.update(query, params);
+			if (rowAffected != 0) {
+				status = true;
+				List<Department> departmentList = employee.getDeptList();
+				if(departmentList!=null) {
+					for(Department dpt : departmentList) {
+						String dptQuery = "INSERT INTO Department (dptId, dptName, empId) VALUES (?, ?, ?);";
+						Object[] dptParams = new Object[] { dpt.getDptId(), dpt.getDptName(), employee.getEmp_id() };
+						try {
+							status = false;
+							int dptRowAffected = emsJdbcTemplate.update(dptQuery, dptParams);
+							if (dptRowAffected != 0) {
+								status = true;
+							}
+						} catch (Exception e) {
+							throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+									"addEmployee method in EmsDaoImpl failed");
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+					"addEmployee method in EmsDaoImpl failed");
+		}
+		return status;
+	}
+
+	@Override
+	public boolean saveEmployee(Employee employee, String empId) throws EmsException {
+		boolean status = false;
+		Employee emp = getEmployeeById(empId);
+		if (emp != null) {
+			emp.setEmp_name(employee.getEmp_name());
+			emp.setEmp_email(employee.getEmp_email());
+			Object[] params = new Object[] { emp.getEmp_name(), emp.getEmp_id() };
+			String query = "update employee set empName = ? where empId = ?";
+			try {
+				int rowAffected = emsJdbcTemplate.update(query, params);
+				if (rowAffected != 0) {
+					status = true;
+				}
+			} catch (Exception e) {
+				throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+						"saveEmployee method in EmsDaoImpl failed");
+			}
+		} else {
+			throw new EmsException(Response.Status.BAD_REQUEST.getStatusCode(), "empId not valid", "empId not valid");
+		}
+		return status;
+	}
+
+	@Override
+	public boolean deleteEmployee(String id) throws EmsException {
+		boolean status = false;
+		String query = "Delete from employee where empId = ? ";
+		Object[] params = new Object[] { Integer.parseInt(id) };
+
+		try {
+			int rowAffected = emsJdbcTemplate.update(query, params);
+			if (rowAffected != 0) {
+				status = true;
+			}
+		} catch (Exception e) {
+			throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+					"deleteEmployee method in EmsDaoImpl failed");
+		}
+		return status;
+	}
+
+	@Override
+	public boolean updateEmployee(String requestString, String empId) throws EmsException {
+		boolean status = false;
+		Employee emp = getEmployeeById(empId);
+		if (emp != null) {
+			emp.setEmp_email(requestString);
+			Object[] params = new Object[] { emp.getEmp_email(), emp.getEmp_id() };
+			String query = "update employee set empEmail = ? where empId = ?";
+			try {
+				int rowAffected = emsJdbcTemplate.update(query, params);
+				if (rowAffected != 0) {
+					status = true;
+				}
+			} catch (Exception e) {
+				throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
+						"updateEmployee method in EmsDaoImpl failed");
+			}
+		} else {
+			throw new EmsException(Response.Status.BAD_REQUEST.getStatusCode(), "empId not valid", "empId not valid");
+		}
+		return status;
+
+	}
+
+}

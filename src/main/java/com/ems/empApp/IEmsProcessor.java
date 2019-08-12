@@ -1,5 +1,5 @@
 package com.ems.empApp;
 
 public interface IEmsProcessor {
-	EmsResponse doProcess();
+	public EmsResponse doProcess(EmsRequest emsRequest) throws EmsException;
 }
