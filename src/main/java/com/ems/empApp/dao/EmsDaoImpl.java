@@ -24,78 +24,6 @@ public class EmsDaoImpl implements EmsDao {
 	@Autowired
 	JdbcTemplate emsJdbcTemplate;
 
-//	@Override
-//	public List<Employee> getAllEmployee() throws EmsException {
-//		String query = "SELECT * FROM Employee JOIN Department ON Employee.empId = Department.empId";
-//		Map<Integer, Employee> map = new HashMap<Integer, Employee>();
-//		try {
-//			List<Map<String, Object>> mapObjectList = emsJdbcTemplate.queryForList(query);
-//			for (Map<String, Object> mapObj : mapObjectList) {
-//				int empId = (int) mapObj.get("empId");
-//				Employee employee = map.get(empId);
-//				if (employee == null) {
-//					employee = new Employee();
-//					employee.setEmp_id(empId);
-//					employee.setEmp_name(mapObj.get("empName")!=null? (String) mapObj.get("empName") : "");
-//					employee.setEmp_email(mapObj.get("empEmail")!=null? (String) mapObj.get("empEmail") : "");
-//					map.put(empId, employee);
-//				}
-//
-//				List<Department> dptList = employee.getDeptList();
-//				if (dptList == null) {
-//					dptList = new ArrayList<Department>();
-//					employee.setDeptList(dptList);
-//				}
-//				Department dpt = new Department();
-//				dpt.setDptId((int) mapObj.get("dptId"));
-//				dpt.setDptName(mapObj.get("dptName")!=null? (String) mapObj.get("dptName") : "");
-//				dpt.setEmpId((int) mapObj.get("empId"));
-//				dptList.add(dpt);
-//			}
-//		} catch (Exception e) {
-//			throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
-//					"getAllEmployee method in EmsDaoImpl failed");
-//		}
-//		return new ArrayList<Employee>(map.values());
-//	}
-//
-//	@Override
-//	public Employee getEmployeeById(String employeeId) throws EmsException {
-//		String query = "SELECT * FROM Employee JOIN Department ON Employee.empId = Department.empId where Employee.empId= "+employeeId;
-//		Map<Integer, Employee> map = new HashMap<Integer, Employee>();
-//		Employee employee = null;
-//		try {
-//			List<Map<String, Object>> mapObjectList = emsJdbcTemplate.queryForList(query);
-//			for (Map<String, Object> mapObj : mapObjectList) {
-//				int empId = (int) mapObj.get("empId");
-//				employee = map.get(empId);
-//				if (employee == null) {
-//					employee = new Employee();
-//					employee.setEmp_id(empId);
-//					employee.setEmp_name(mapObj.get("empName")!=null? (String) mapObj.get("empName") : "");
-//					employee.setEmp_email(mapObj.get("empEmail")!=null? (String) mapObj.get("empEmail") : "");
-//					map.put(empId, employee);
-//				}
-//
-//				List<Department> dptList = employee.getDeptList();
-//				if (dptList == null) {
-//					dptList = new ArrayList<Department>();
-//					employee.setDeptList(dptList);
-//				}
-//				Department dpt = new Department();
-//				dpt.setDptId((int) mapObj.get("dptId"));
-//				dpt.setDptName(mapObj.get("dptName")!=null? (String) mapObj.get("dptName") : "");
-//				dpt.setEmpId((int) mapObj.get("empId"));
-//				dptList.add(dpt);
-//			}
-//			
-//		} catch (Exception e) {
-//			throw new EmsException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage(),
-//					"getEmployeeById method in EmsDaoImpl failed");
-//		}
-//		return employee;
-//	}
-	
 	@Override
 	public List<Employee> getAllEmployee() throws EmsException {
 		
@@ -112,10 +40,6 @@ public class EmsDaoImpl implements EmsDao {
 			int empId = emp.getEmp_id();
 			Employee employee = map.get(empId);
 			if (employee == null) {
-//				employee = new Employee();
-//				employee.setEmp_id(empId);
-//				employee.setEmp_name(emp.getEmp_name());
-//				employee.setEmp_email(emp.getEmp_email());
 				map.put(empId, emp);
 			}
 
