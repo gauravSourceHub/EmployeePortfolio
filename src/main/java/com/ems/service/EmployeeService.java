@@ -63,7 +63,7 @@ public class EmployeeService {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = EmsResponse.class),
 			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
 			@ApiResponse(code = 404, message = "Not Found"), @ApiResponse(code = 500, message = "Failure") })
-	public EmsResponse fetchEmployeeById(
+	public EmsResponse getEmployeeById(
 			@ApiParam(value = "Specify Employee Id for which employee details to returned", required = true) @PathParam("empId") String empId)
 			throws EmsException {
 		EmsRequest emsRequest = new EmsRequest();
