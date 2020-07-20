@@ -36,14 +36,14 @@ public class EmsDaoImpl implements EmsDao {
 		RowMapper<Department> dptRowMapper  = new DepartmentRowMapper();
 		List<Department> dptList = emsJdbcTemplate.query(query, dptRowMapper);
 		
-		for(Employee emp : list) {
+		list.stream().forEach(emp -> {
 			int empId = emp.getEmp_id();
 			Employee employee = map.get(empId);
 			if (employee == null) {
 				map.put(empId, emp);
 			}
 
-			for (Department dpt : dptList) {
+			dptList.stream().forEach(dpt -> {
 				if (dpt.getEmpId() == emp.getEmp_id()) {
 					List<Department> dptListTemp = emp.getDeptList();
 					if (dptListTemp == null) {
@@ -52,9 +52,10 @@ public class EmsDaoImpl implements EmsDao {
 					}
 					dptListTemp.add(dpt);
 				}
-			}
-		}
-		
+			});
+
+		});
+			
 		return new ArrayList<Employee>(map.values());
 	}
 
