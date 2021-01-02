@@ -28,34 +28,46 @@ public class EmsDaoImpl implements EmsDao {
 	public List<Employee> getAllEmployee() throws EmsException {
 		
 		Map<Integer, Employee> map = new HashMap<Integer, Employee>();
-		String query = "SELECT * from employee";
-		RowMapper<Employee> rowMapper = new EmployeeRowMapper();
-		List<Employee> list = emsJdbcTemplate.query(query, rowMapper);
+//		String query = "SELECT * from employee";
+//		RowMapper<Employee> rowMapper = new EmployeeRowMapper();
+//		List<Employee> list = emsJdbcTemplate.query(query, rowMapper);
+//		
+//		query = "SELECT * from Department";
+//		RowMapper<Department> dptRowMapper  = new DepartmentRowMapper();
+//		List<Department> dptList = emsJdbcTemplate.query(query, dptRowMapper);
+//		
+//		list.stream().forEach(emp -> {
+//			int empId = emp.getEmp_id();
+//			Employee employee = map.get(empId);
+//			if (employee == null) {
+//				map.put(empId, emp);
+//			}
+//
+//			dptList.stream().forEach(dpt -> {
+//				if (dpt.getEmpId() == emp.getEmp_id()) {
+//					List<Department> dptListTemp = emp.getDeptList();
+//					if (dptListTemp == null) {
+//						dptListTemp = new ArrayList<Department>();
+//						emp.setDeptList(dptListTemp);
+//					}
+//					dptListTemp.add(dpt);
+//				}
+//			});
+//
+//		});
 		
-		query = "SELECT * from Department";
-		RowMapper<Department> dptRowMapper  = new DepartmentRowMapper();
-		List<Department> dptList = emsJdbcTemplate.query(query, dptRowMapper);
-		
-		list.stream().forEach(emp -> {
-			int empId = emp.getEmp_id();
-			Employee employee = map.get(empId);
-			if (employee == null) {
-				map.put(empId, emp);
-			}
-
-			dptList.stream().forEach(dpt -> {
-				if (dpt.getEmpId() == emp.getEmp_id()) {
-					List<Department> dptListTemp = emp.getDeptList();
-					if (dptListTemp == null) {
-						dptListTemp = new ArrayList<Department>();
-						emp.setDeptList(dptListTemp);
-					}
-					dptListTemp.add(dpt);
-				}
-			});
-
-		});
-			
+		Employee emp = new Employee();
+		emp.setEmp_id(1);
+		emp.setEmp_name("john");
+		emp.setEmp_email("john@gmail.com");
+		List<Department> dptLst = new ArrayList();
+		Department dpt = new Department();
+		dpt.setDptId(10);
+		dpt.setDptName("departmentName");
+		dpt.setEmpId(1);
+		dptLst.add(dpt);
+		emp.setDeptList(dptLst);
+		map.put(1,emp);
 		return new ArrayList<Employee>(map.values());
 	}
 
