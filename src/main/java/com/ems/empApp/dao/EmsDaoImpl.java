@@ -83,6 +83,7 @@ public class EmsDaoImpl implements EmsDao {
 		RowMapper<Department> dptRowMapper = new DepartmentRowMapper();
         List<Department> departmentList = emsJdbcTemplate.query(query,dptRowMapper, params);
 		employee.setDeptList(departmentList);
+		System.out.println("here");
         return employee;
 	}
 
